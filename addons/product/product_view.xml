@@ -130,7 +130,7 @@
                                         <field name="cost_method" groups="product.group_costing_method"
                                             attrs="{'readonly': [('is_only_child', '=', False)]}"/>
                                         <field name="standard_price"
-                                            attrs="{'readonly': ['|', ('cost_method','=','average'), ('is_only_child', '=', False)]}"/>
+                                            attrs="{'readonly': ['|', '|', ('cost_method','=','average'), ('cost_method','=','real'), ('is_only_child', '=', False)]}"/>
                                     </group>
                                     <group name="procurement_uom" groups="product.group_uom" string="Purchase">
                                         <field name="uom_po_id"
@@ -871,7 +871,7 @@
                                 <group name="procurement">
                                     <group name="general">
                                         <field name="cost_method" groups="product.group_costing_method"/>
-                                        <field name="standard_price" attrs="{'readonly':[('cost_method','=','average')]}"/>
+                                        <field name="standard_price" attrs="{'readonly':['|', ('cost_method','=','average'), ('cost_method','=','real')]}"/>
                                     </group>
                                     <group name="delay" string="Delays">
                                         <label for="produce_delay"/>

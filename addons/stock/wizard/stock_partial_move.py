@@ -78,7 +78,7 @@ class stock_partial_move(osv.osv_memory):
                 'prodlot_id': move.prodlot_id.id,
             }
             moves_ids.append(move_id)
-            if (move.move_id.picking_id.type == 'in') and (move.product_id.cost_method == 'average'):
+            if (move.move_id.picking_id.type == 'in') and (move.product_id.cost_method == 'average' or move.product_id.cost_method == 'real'):
                 partial_data['move%s' % (move_id)].update(product_price=move.cost,
                                                           product_currency=move.currency.id)
         self.pool.get('stock.move').do_partial(cr, uid, moves_ids, partial_data, context=context)
