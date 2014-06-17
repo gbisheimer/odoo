@@ -1255,7 +1255,7 @@ class stock_picking(osv.osv):
                     too_many.append(move)
 
                 # Average price computation
-                if (pick.type == 'in') and (move.product_id.cost_method == 'average'):
+                if (pick.type == 'in') and (move.product_id.cost_method == 'average' or move.product_id.cost_method == 'real'):
                     product = product_obj.browse(cr, uid, move.product_id.id)
                     move_currency_id = move.company_id.currency_id.id
                     context['currency_id'] = move_currency_id
@@ -1276,8 +1276,11 @@ class stock_picking(osv.osv):
                         else:
                             # Get the standard price
                             amount_unit = product.price_get('standard_price', context=context)[product.id]
-                            new_std_price = ((amount_unit * product_avail[product.id])\
-                                + (new_price * qty))/(product_avail[product.id] + qty)
+                            if move.product_id.cost_method == 'real':
+                                new_std_price = new_price
+                            else:
+                                new_std_price = ((amount_unit * product_avail[product.id])\
+                                    + (new_price * qty))/(product_avail[product.id] + qty)
                         # Write the field according to price type field
                         product_obj.write(cr, uid, [product.id], {'standard_price': new_std_price})
 
@@ -2697,7 +2700,7 @@ class stock_move(osv.osv):
                 too_many.append(move)
 
             # Average price computation
-            if (move.picking_id.type == 'in') and (move.product_id.cost_method == 'average'):
+            if (move.picking_id.type == 'in') and (move.product_id.cost_method == 'average' or move.product_id.cost_method == 'real'):
                 product = product_obj.browse(cr, uid, move.product_id.id)
                 move_currency_id = move.company_id.currency_id.id
                 context['currency_id'] = move_currency_id
@@ -2712,8 +2715,11 @@ class stock_move(osv.osv):
                     else:
                         # Get the standard price
                         amount_unit = product.price_get('standard_price', context=context)[product.id]
-                        new_std_price = ((amount_unit * product.qty_available)\
-                            + (new_price * qty))/(product.qty_available + qty)
+                        if move.product_id.cost_method == 'real':
+                            new_std_price = new_price
+                        else:
+                            new_std_price = ((amount_unit * product.qty_available)\
+                                + (new_price * qty))/(product.qty_available + qty)
 
                     product_obj.write(cr, uid, [product.id],{'standard_price': new_std_price})
 
